@@ -32,7 +32,10 @@ export async function buildServer(): Promise<FastifyInstance> {
     }
   });
 
-  await app.register(cors, { origin: env.corsOrigin, credentials: true });
+  await app.register(cors, {
+    origin: env.corsOrigin.split(',').map((o) => o.trim()).filter(Boolean),
+    credentials: true,
+  });
   await app.register(jwt, { secret: env.jwtSecret });
   await app.register(ws);
 

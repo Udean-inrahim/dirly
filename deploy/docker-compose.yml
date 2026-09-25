@@ -1,0 +1,43 @@
+# Syntax: docker compose up -d
+# Requirements on the VPS: Docker Engine + Docker Compose plugin.
+# 1. Copy this whole repo (or just this folder + apps/packages) to the VPS.
+# 2. cp deploy/.env.production .env  (fill in real values)
+# 3. docker compose up -d --build
+
+name: spm
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      mqtt:
+        condition: service_started
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mqtt-data:/mosquitto/data
+      - mqtt-log:/mosquitto/log
+
+volumes:
+  mqtt-data:
+  mqtt-log:

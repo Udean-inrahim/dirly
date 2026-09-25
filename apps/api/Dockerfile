@@ -4,6 +4,7 @@ COPY package.json package-lock.json ./
 COPY packages/shared ./packages/shared
 COPY apps/api ./apps/api
 RUN npm install
+RUN npm run build -w @dirly/shared
 WORKDIR /app/apps/api
 RUN npx prisma generate && npm run build
 
