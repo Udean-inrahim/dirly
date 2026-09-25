@@ -29,3 +29,5 @@ Thumbs.db
 
 # vercel / railway
 .vercel/
+.vercel
+.env*
