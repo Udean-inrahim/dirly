@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# builds
+dist/
+build/
+*.tsbuildinfo
+
+# env
+.env
+.env.local
+.env.*.local
+
+# database
+apps/api/prisma/migrations/dev.db*
+
+# logs
+logs/
+*.log
+npm-debug.log*
+
+# editor / os
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# vercel / railway
+.vercel/

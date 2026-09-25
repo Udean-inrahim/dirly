@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sensor {
+  id         String    @id @default(cuid())
+  sensorCode String    @unique
+  name       String
+  location   String
+  plant      String?
+  isActive   Boolean   @default(true)
+  lastSeenAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  readings   Reading[]
+  alerts     Alert[]
+
+  @@index([isActive])
+}
+
+model Reading {
+  id           String   @id @default(cuid())
+  sensorId     String
+  sensor       Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  soilMoisture Float
+  temperature  Float
+  recordedAt   DateTime @default(now())
+
+  @@index([sensorId, recordedAt])
+}
+
+model Alert {
+  id         String     @id @default(cuid())
+  sensorId   String
+  sensor     Sensor     @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  type       String
+  value      Float?
+  threshold  Float?
+  message    String
+  severity   String
+  status     String     @default("ACTIVE")
+  createdAt  DateTime   @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([sensorId, type, status])
+}
+
+model Setting {
+  id                 String   @id @default("singleton")
+  minSoilMoisture    Float    @default(30)
+  maxSoilMoisture    Float    @default(70)
+  minTemperature     Float    @default(15)
+  maxTemperature     Float    @default(35)
+  refreshIntervalSec Int      @default(5)
+  offlineTimeoutSec  Int      @default(60)
+  updatedAt          DateTime @updatedAt
+}

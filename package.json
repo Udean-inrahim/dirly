@@ -1,0 +1,34 @@
+{
+  "name": "dirly",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Smart plant soil moisture monitoring. ESP32 + MQTT + Fastify + Prisma + PostgreSQL, dashboard React (Vite/Tailwind/Recharts).",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm-run-all -p dev:api dev:web",
+    "dev:api": "npm run dev -w @dirly/api",
+    "dev:web": "npm run dev -w @dirly/web",
+    "build": "npm run build -w @dirly/shared && npm run build -w @dirly/api && npm run build -w @dirly/web",
+    "db:generate": "npm run db:generate -w @dirly/api",
+    "db:push": "npm run db:push -w @dirly/api",
+    "db:seed": "npm run db:seed -w @dirly/api",
+    "simulate": "npm run simulate -w @dirly/api"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "allowScripts": {
+    "prisma@5.22.0": true,
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true,
+    "esbuild@0.27.7": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.21.5": true
+  }
+}
